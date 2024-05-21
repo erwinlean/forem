@@ -10,70 +10,75 @@ import (
 	"time"
 )
 
-// Create CSV (hardcoded) of the data
 func writeCSV(filename string, product ProductDetail) {
 	if _, exists := allScrapedProducts[product.URL]; exists {
-		log.Printf("Product already exists in CSV: %s", product.URL)
+		log.Printf("El producto ya existe en el archivo CSV: %s", product.URL)
 		return
 	}
 
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Fatalln("Failed to open output CSV file", err)
+		log.Fatalln("Error al abrir el archivo CSV de salida", err)
 	}
 	defer file.Close()
 
 	writer := csv.NewWriter(file)
 
-	// Verify if exists
 	fileInfo, err := file.Stat()
 	if err != nil {
-		log.Printf("Failed to get file info: %s", err)
+		log.Printf("Error al obtener información del archivo: %s", err)
 		return
 	}
 
-	// Header
 	if fileInfo.Size() == 0 {
-		header := []string{"url", "article_number", "name", "description", "short_description", "image", "technical_image", "information_pdf", "spec_sheet_mitutoyo", "image_links", "attributes"}
+		header := []string{"url", "article_number", "name", "description", "short_description", "image", "technical_image", "image_links", "variants", "leaflet_links", "product_pdf_links", "instruction_pdf_links", "accesories", "youtube_links", "software_links", "attributes"}
 		err := writer.Write(header)
 		if err != nil {
-			log.Printf("Failed to write CSV header: %s", err)
+			log.Printf("Error al escribir el encabezado del CSV: %s", err)
 			return
 		}
 	}
 
-	// Serialize attributes map to a single string
 	attributes := []string{}
 	for key, value := range product.Attributes {
 		attributes = append(attributes, fmt.Sprintf("%s: %s", key, value))
 	}
 	serializedAttributes := strings.Join(attributes, "; ")
 
-	// Write CSV
 	imageLinks := strings.Join(product.ImageLinks, ";")
+	variants := strings.Join(product.Variants, ";")
+	leafLetLinks := strings.Join(product.LeafLetLinks, ";")
+	instructionPDFLinks := strings.Join(product.InstructionPDFLinks, ";")
+	youtubeLinks := strings.Join(product.YoutubeLinks, ";")
+	accesories := strings.Join(product.Accesories, ";")
+	softwareLinks := strings.Join(product.SoftwareLinks, ";")
+
 	record := []string{
 		product.URL,
 		product.ArticleNumber,
 		product.Name,
 		product.Description,
-		product.ShotDescription,
+		product.ShortDescription,
 		product.Image,
 		product.TechnicalImage,
-		product.InformationPDF,
-		product.SpecSheetMitutoyo,
 		imageLinks,
+		variants,
+		leafLetLinks,
+		instructionPDFLinks,
+		accesories,
+		youtubeLinks,
+		softwareLinks, 
 		serializedAttributes,
 	}
 	err = writer.Write(record)
 	if err != nil {
-		log.Printf("Failed to write product details to CSV: %s", err)
+		log.Printf("Error al escribir los detalles del producto en el CSV: %s", err)
 		return
 	}
 
 	writer.Flush()
 }
 
-// Check if the URL is working
 func checkURL(url string) bool {
 	client := &http.Client{
 		Timeout: 30 * time.Second,
