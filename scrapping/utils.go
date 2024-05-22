@@ -107,3 +107,33 @@ func checkURL(url string) bool {
 	log.Printf("Failed to fetch %s with status code %d", url, resp.StatusCode)
 	return false
 }
+
+func printProductDetails(product ProductDetail) {
+	/*
+	Variants: 
+	LeafLet Links: 
+	Instruction PDF Links: 
+	Accesories: 
+	*/
+
+	//fmt.Println("Product Details:")
+	//fmt.Printf("URL: %s\n", product.URL)
+	//fmt.Printf("Article Number: %s\n", product.ArticleNumber)
+	//fmt.Printf("Name: %s\n", product.Name)
+	//fmt.Printf("Description: %s\n", product.Description)
+	//fmt.Printf("Short Description: %s\n", product.ShortDescription)
+	//fmt.Printf("Image: %s\n", product.Image)
+	//fmt.Printf("Technical Image: %s\n", product.TechnicalImage)
+	fmt.Printf("Variants: %s\n", strings.Join(product.Variants, ", "))
+	//fmt.Printf("LeafLet Links: %s\n", strings.Join(product.LeafLetLinks, ", "))
+	//fmt.Printf("Instruction PDF Links: %s\n", strings.Join(product.InstructionPDFLinks, ", "))
+	//fmt.Printf("Accesories: %s\n", strings.Join(product.Accesories, ", "))
+	//fmt.Printf("Image Links: %s\n", strings.Join(product.ImageLinks, ", "))
+	//fmt.Printf("YouTube Links: %s\n", strings.Join(product.YoutubeLinks, ", "))
+	//fmt.Printf("Software Links: %s\n", strings.Join(product.SoftwareLinks, ", "))
+	//fmt.Println("Attributes:")
+	//for key, value := range product.Attributes {
+	//	fmt.Printf("  %s: %s\n", key, value)
+	//}
+	//fmt.Println("------------------------------------------------")
+}

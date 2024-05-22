@@ -6,159 +6,115 @@
 
     <title>Forem</title>
 
-    <link rel="shortcut icon" href="./assets/forem_logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="./assets/random-logo.png" type="image/x-icon">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="./style/index.css">
 </head>
 <body>
-<div class="flex h-screen">
-    <div class="bg-gray-900 text-white p-6 flex flex-col justify-between">
-      <div>
-        <div class="mb-6">
-          <img
-            alt="Company Logo"
-            class="object-fit"
-            height="150"
-            src="./assets/forem_logo.png"
-            width="150"
-            style="object-fit: fit;"
-            alt="Logo"
-          />
-        </div>
-        <br><br>
-        <div class="space-y-4">
-          <div>
-            <h3 class="text-lg font-semibold">Marca 1</h3>
-            <p class="text-gray-400">Url a realizar scrapping</p>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold">Marca 2</h3>
-            <p class="text-gray-400">Url a realizar scrapping</p>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold">Marca 3</h3>
-            <p class="text-gray-400">Url a realizar scrapping</p>
-          </div>
-        </div>
+  <div class="flex h-screen w-full">
+    <div class="flex flex-col bg-gray-900 p-6 text-white">
+      <div class="flex items-center">
+        <div class="flex justify-center items-center">
+          <img src="./assets/forem_logo.png" alt="Logo" width="120" height="50" class="text-gray-50" style="object-fit: cover;"/>
       </div>
-      <div class="absolute top-4 right-4">
-        <button
-          class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 rounded-full"
-          type="button"
-          id="radix-:r3v:"
-          aria-haspopup="menu"
-          aria-expanded="false"
-          data-state="closed"
-        >
-          <div class="flex items-center mr-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="h-6 w-6 mr-2"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            <img
-              alt="User Avatar"
-              class="rounded-full"
-              height="32"
-              src="./assets/user_logo.png"
-              width="32"
-              style="aspect-ratio: 32 / 32; object-fit: cover;"
-            />
-          </div>
-        </button>
+      </div>
+      <div style="padding-top: 55px;" class="mt-8 flex flex-col gap-4">
+        <button style="padding: 22px 17px;" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex-1 bg-gray-800 hover:bg-gray-700">Iniciar scrapping Mitutoyo</button>
+        <button style="padding: 22px 17px;" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex-1 bg-gray-800 hover:bg-gray-700">Iniciar scrapping Cosensaws</button>
+        <button style="padding: 22px 17px;" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex-1 bg-gray-800 hover:bg-gray-700">Iniciar scrapping Fluke</button>
+        <button style="padding: 22px 17px;" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex-1 bg-gray-800 hover:bg-gray-700">Iniciar scrapping Kinkelder</button>
       </div>
     </div>
-    <div class="flex-1 overflow-auto">
-      <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between mb-6 mt-[50px]">
-          <div>
-            <h1 class="text-3xl font-bold">Sistema de acceso a informacion</h1>
-            <p class="text-gray-500">Informacion Scrape</p>
-          </div>
-          <div class="flex items-center space-x-4">
-            <input
-              class="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-64"
-              placeholder="Enter search term"
-              type="text"
-            />
-            <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-              Iniciar Scraping
-            </button>
-          </div>
+    <div class="flex-1 bg-gray-800 p-6 text-white">
+      <header class="flex items-center justify-between">
+        <div class="flex justify-end ml-auto">
+          <a href="">
+            <img src="./assets/user_logo.png" style="width: 60px;" alt="user logo" title="user logo" class="user-logo">
+          </a>
         </div>
-        <div class="space-y-6">
-          <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-xl font-semibold mb-4">Informacion Scraped</h2>
-            <div class="flex justify-end space-x-4 mb-4">
-              <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                Descarga CSV
-              </button>
-              <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                Descarga Excel
-              </button>
-              <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                Descarga JSON
-              </button>
-            </div>
-            <div
-              dir="ltr"
-              class="relative overflow-hidden h-[400px]"
-              style="position: relative; --radix-scroll-area-corner-width: 0px; --radix-scroll-area-corner-height: 0px;"
-            >
-            <br><br>
-              <div
-                data-radix-scroll-area-viewport=""
-                class="h-full w-full rounded-[inherit]"
-                style="overflow: hidden scroll;"
-              >
-                <div style="min-width: 100%; display: table;">
-                  <div class="space-y-4">
-                    <div class="grid grid-cols-3 gap-4">
-                      <div>
-                        <h3 class="font-semibold">Titulo 1</h3>
-                        <p class="text-gray-500">Descripciones/etc 1</p>
-                      </div>
-                      <div>
-                        <h3 class="font-semibold">Titulo 2</h3>
-                        <p class="text-gray-500">Descripciones/etc 2</p>
-                      </div>
-                      <div>
-                        <h3 class="font-semibold">Titulo 3</h3>
-                        <p class="text-gray-500">Descripciones/etc 3</p>
-                      </div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-4">
-                      <div>
-                        <h3 class="font-semibold">Titulo 4</h3>
-                        <p class="text-gray-500">Descripciones/etc 4</p>
-                      </div>
-                      <div>
-                        <h3 class="font-semibold">Titutlo 5</h3>
-                        <p class="text-gray-500">Descripciones/etc 5</p>
-                      </div>
-                      <div>
-                        <h3 class="font-semibold">Titutlo 6</h3>
-                        <p class="text-gray-500">Descripciones/etc 6</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      </header>      
+    <main class="mt-6">
+      <div class="border-b border-gray-800 pb-4">
+        <h2 class="text-2xl font-bold">Obtener datos de producto</h2>
+      </div>
+      <div class="mt-6 flex justify-between">
+        <div class="flex gap-2">
+          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">yy/mm/dd datos Mitutoyo</button>
+          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">yy/mm/dd datos Cosensaws</button>
+          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">yy/mm/dd datos Fluke</button>
+          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">yy/mm/dd datos Kinkelder</button>
+          <div class="relative">
+            <input class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-900 pr-8" placeholder="Buscar producto" type="text"/>
           </div>
         </div>
       </div>
+      <div class="mt-6">
+        <div class="relative w-full overflow-auto">
+          <table class="w-full caption-bottom text-sm">
+            <thead class="[&_tr]:border-b">
+              <tr class="border-b bg-gray-900 transition-colors">
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">URL</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Nombre</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Descripcion</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Descripcion Corta</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Imagen principal</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Imagenes</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Imagen tecnica</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Variantes</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Accesorios</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Videos</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Software zip</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Detalles</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Enlaces</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Intrucciones PDF</th>
+              </tr>
+            </thead>
+            <!-- this will came as json from the backend-->
+            <tbody class="[&_tr:last-child]:border-0">
+              <tr class="border-b transition-colors">
+                <td class="p-4 align-middle">https://example.com</td>
+                <td class="p-4 align-middle">Example Website</td>
+                <td class="p-4 align-middle">This is an example website.</td>
+                <td class="p-4 align-middle">example, website, landing page</td>
+                <td class="p-4 align-middle">3</td>
+                <td class="p-4 align-middle">10</td>
+                <td class="p-4 align-middle">1</td>
+                <td class="p-4 align-middle">2</td>
+                <td class="p-4 align-middle">3</td>
+                <td class="p-4 align-middle">200</td>
+                <td class="p-4 align-middle">10</td>
+                <td class="p-4 align-middle">1</td>
+                <td class="p-4 align-middle">2</td>
+                <td class="p-4 align-middle">200</td>
+              </tr>
+              <tr class="border-b transition-colors">
+                <td class="p-4 align-middle">https://example.com</td>
+                <td class="p-4 align-middle">Example Website</td>
+                <td class="p-4 align-middle">This is an example website.</td>
+                <td class="p-4 align-middle">example, website, landing page</td>
+                <td class="p-4 align-middle">3</td>
+                <td class="p-4 align-middle">10</td>
+                <td class="p-4 align-middle">1</td>
+                <td class="p-4 align-middle">2</td>
+                <td class="p-4 align-middle">3</td>
+                <td class="p-4 align-middle">200</td>
+                <td class="p-4 align-middle">10</td>
+                <td class="p-4 align-middle">1</td>
+                <td class="p-4 align-middle">2</td>
+                <td class="p-4 align-middle">3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>        
+      </div>
+        <div class="mt-6 flex justify-between">
+          <div class="flex gap-2">
+            <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">Exportar datos csv</button>
+            <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">Exportar datos xlsx</button> 
+          </div>
+        </div>
+      </main>
     </div>
   </div>
 </body>

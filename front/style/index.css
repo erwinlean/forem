@@ -1,0 +1,6 @@
+tbody > tr:hover {
+    background-color: #4A5568;
+}
+button{
+    border-color: black !important;
+}
