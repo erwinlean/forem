@@ -1,14 +1,9 @@
 package main
 
 import (
-	"context"
 	"log"
 	"strings"
-	"time"
 
-	"github.com/PuerkitoBio/goquery"
-	"github.com/chromedp/cdproto/cdp"
-	"github.com/chromedp/chromedp"
 	"github.com/gocolly/colly"
 )
 
@@ -17,10 +12,15 @@ var (
 	allScrapedProducts = make(map[string]bool)
 )
 
+var urlCounts int = 0
+
 func scrapeRecursive(url string) {
 	if _, visited := allScrapedURLs[url]; visited {
 		return
 	}
+
+	urlCounts++
+	log.Printf("Processed URL #%d: %s", urlCounts, url)
 
 	subURLs, products := scrapeCategories(url)
 	allScrapedURLs[url] = true
@@ -86,17 +86,26 @@ func scrapeCategories(url string) ([]string, []ProductDetail) {
 
 func extractProductDetails(e *colly.HTMLElement) ProductDetail {
 	productURL := e.Request.URL.String()
+	urlCounts++
+	log.Printf("Processed URL #%d: %s", urlCounts, productURL)
+
 	productArticleNumber := e.ChildText("#product div.product-content-wrapper div.product-content div.articlenumber h2 span.value")
 	productName := e.ChildText("#product div.product-content-wrapper div.product-content div.name h2")
 	
-	// Descripción del producto
+	// Descripción del producto > funcionando mal, enalgunos casos copia varias veces y realiza salto, ver. por ejemplo:
+	// https://shop.mitutoyo.mx/products/es_MX/01.030.075/Digital%20Depth%20Gauge/$catalogue/mitutoyoData/PR/547-258A/index.xhtml;jsessionid=3BD4A336DAEFD65DCB4FB5BA594B495C,547-258A,Digital
+	// https://shop.mitutoyo.mx/products/es_MX/1300442458734/Digital%20Indicator%20ID-C/$catalogue/mitutoyoData/PR/543-725B/index.xhtml;jsessionid=42D17D07EF4B24767DE58575648CCD38,543-725B,Digital
 	var productDescriptionBuilder strings.Builder
-	e.ForEach(".description", func(_ int, elem *colly.HTMLElement) {
-		elem.DOM.Contents().Each(func(_ int, node *goquery.Selection) {
-			productDescriptionBuilder.WriteString(strings.TrimSpace(node.Text()) + " ")
+	e.ForEach("span.description", func(_ int, elem *colly.HTMLElement) {
+		elem.ForEach("*", func(_ int, childElem *colly.HTMLElement) {
+			productDescriptionBuilder.WriteString(childElem.Text + " ")
 		})
 	})
 	productDescription := strings.TrimSpace(productDescriptionBuilder.String())
+
+	// Escapar comillas y eliminar saltos de línea
+	productDescription = strings.ReplaceAll(productDescription, "\"", "\"\"")
+	productDescription = strings.ReplaceAll(productDescription, "\n", " ")
 	
 	productShortDescription := e.ChildText("#product div.product-content-wrapper div.product-content div.name span")
 	productImage := e.ChildAttr("#product div.product-content-wrapper div.product-image-wrapper div img", "src")
@@ -128,25 +137,6 @@ func extractProductDetails(e *colly.HTMLElement) ProductDetail {
 	// NO FUNCIONAL #tileWrapper > div > div > div:nth-child(1) > div > div > div.general > div.articlenumber > a	
 	// testing width chromedp for click on x functions check onclick="..."
 	var variants []string
-	ctx, cancel := chromedp.NewContext(context.Background())
-	defer cancel()
-
-	var variantNodes []*cdp.Node
-	err := chromedp.Run(ctx,
-		chromedp.Navigate(productURL),
-		chromedp.WaitVisible("#productDetailPage\\:accform\\:variantsAcc > i"),
-		chromedp.Click("#productDetailPage\\:accform\\:variantsAcc > i"),
-		chromedp.Sleep(2*time.Second),
-		chromedp.Nodes("a.listLink", &variantNodes, chromedp.ByQueryAll),
-	)
-	if err != nil {
-		log.Println("Error al extraer las variantes:", err)
-	}
-
-	for _, node := range variantNodes {
-		variants = append(variants, node.NodeValue)
-	}
-	log.Print(variants)
 
 	// Accesorios > product_relations
 	// NO FUNCIONAL

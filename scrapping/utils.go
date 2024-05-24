@@ -124,7 +124,7 @@ func printProductDetails(product ProductDetail) {
 	//fmt.Printf("Short Description: %s\n", product.ShortDescription)
 	//fmt.Printf("Image: %s\n", product.Image)
 	//fmt.Printf("Technical Image: %s\n", product.TechnicalImage)
-	fmt.Printf("Variants: %s\n", strings.Join(product.Variants, ", "))
+	//fmt.Printf("Variants: %s\n", strings.Join(product.Variants, ", "))
 	//fmt.Printf("LeafLet Links: %s\n", strings.Join(product.LeafLetLinks, ", "))
 	//fmt.Printf("Instruction PDF Links: %s\n", strings.Join(product.InstructionPDFLinks, ", "))
 	//fmt.Printf("Accesories: %s\n", strings.Join(product.Accesories, ", "))
