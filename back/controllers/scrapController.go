@@ -2,8 +2,51 @@ package controllers
 
 import (
     "net/http"
+    
+    "back/utils"
 )
 
-func GenerateCSV(w http.ResponseWriter, r *http.Request) {
-    // this data will came from the scrapping functions to come here latter on
+func Mitutoyo(w http.ResponseWriter, r *http.Request) {
+
+    err := utils.SendEmail("recipient@example.com", "Scraping Mitutoyo complete", "Scraping Mitutoyo has been completed successfully!")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Scraping Mitutoyo completed successfully!"))
+}
+func Cosensaws(w http.ResponseWriter, r *http.Request) {
+
+    err := utils.SendEmail("recipient@example.com", "Scraping Cosensaws complete", "Scraping Cosensaws has been completed successfully!")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Scraping Cosensaws completed successfully!"))
+}
+func Fluke(w http.ResponseWriter, r *http.Request) {
+
+    err := utils.SendEmail("recipient@example.com", "Scraping Fluke complete", "Scraping Fluke has been completed successfully!")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Scraping Fluke completed successfully!"))
+}
+func Kinkelder(w http.ResponseWriter, r *http.Request) {
+
+    err := utils.SendEmail("recipient@example.com", "Scraping Kinkelder complete", "Scraping Kinkelder has been completed successfully!")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Scraping Kinkelder completed successfully!"))
 }
