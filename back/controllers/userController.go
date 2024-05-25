@@ -4,6 +4,7 @@ import (
     "context"
     "encoding/json"
     "net/http"
+    "time"
 
     "github.com/gorilla/sessions"
     "go.mongodb.org/mongo-driver/bson"
@@ -31,6 +32,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    result.LoginDates = append(result.LoginDates, time.Now())
+
+    _, err = utils.UserCollection.ReplaceOne(context.TODO(), bson.M{"_id": result.ID}, result)
+    if err != nil {
+        http.Error(w, "Internal server error", http.StatusInternalServerError)
+        return
+    }
+
     session, _ := store.Get(r, "session")
     session.Values["user"] = result.Username
     session.Save(r, w)
@@ -48,6 +57,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
     user.Password = string(hashedPassword)
+
+    user.CreatedAt = time.Now()
 
     _, err = utils.UserCollection.InsertOne(context.TODO(), user)
     if err != nil {

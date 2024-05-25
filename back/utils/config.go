@@ -3,29 +3,39 @@ package utils
 import (
     "context"
     "log"
+    "os"
 
+    "github.com/joho/godotenv"
     "go.mongodb.org/mongo-driver/mongo"
     "go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectDB() *mongo.Client {
-    clientOptions := options.Client().ApplyURI("mongo_uri")
+var UserCollection *mongo.Collection
 
-    // Crea el cliente con las opciones configuradas
+func init() {
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
+
+    dbUser := os.Getenv("DBuser")
+    dbPassword := os.Getenv("DBpasswordAuth")
+    dbHost := os.Getenv("DBhost")
+
+    connectionString := "mongodb+srv://" + dbUser + ":" + dbPassword + "@" + dbHost + "/?retryWrites=true&w=majority"
+    clientOptions := options.Client().ApplyURI(connectionString)
+
     client, err := mongo.Connect(context.Background(), clientOptions)
     if err != nil {
         log.Fatal(err)
     }
 
-    // Verifica si la conexión se estableció correctamente
     err = client.Ping(context.Background(), nil)
     if err != nil {
         log.Fatal(err)
     }
 
-    log.Println("Connected to MongoDB!")
-    return client
-}
+    log.Println("Conectado a la base de datos MongoDB")
 
-var DB *mongo.Client = ConnectDB()
-var UserCollection *mongo.Collection = DB.Database("todo").Collection("users")
+    UserCollection = client.Database("nombre_de_tu_base_de_datos").Collection("usuarios")
+}
