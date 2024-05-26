@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"strings"
+	"regexp"
 
 	"github.com/gocolly/colly"
 )
@@ -91,10 +92,9 @@ func extractProductDetails(e *colly.HTMLElement) ProductDetail {
 
 	productArticleNumber := e.ChildText("#product div.product-content-wrapper div.product-content div.articlenumber h2 span.value")
 	productName := e.ChildText("#product div.product-content-wrapper div.product-content div.name h2")
+	productName = strings.ReplaceAll(productName, "\"", "\"\"")
+	productName = strings.ReplaceAll(productName, "\n", " ")
 	
-	// Descripción del producto > funcionando mal, enalgunos casos copia varias veces y realiza salto, ver. por ejemplo:
-	// https://shop.mitutoyo.mx/products/es_MX/01.030.075/Digital%20Depth%20Gauge/$catalogue/mitutoyoData/PR/547-258A/index.xhtml;jsessionid=3BD4A336DAEFD65DCB4FB5BA594B495C,547-258A,Digital
-	// https://shop.mitutoyo.mx/products/es_MX/1300442458734/Digital%20Indicator%20ID-C/$catalogue/mitutoyoData/PR/543-725B/index.xhtml;jsessionid=42D17D07EF4B24767DE58575648CCD38,543-725B,Digital
 	var productDescriptionBuilder strings.Builder
 	e.ForEach("span.description", func(_ int, elem *colly.HTMLElement) {
 		elem.ForEach("*", func(_ int, childElem *colly.HTMLElement) {
@@ -102,12 +102,13 @@ func extractProductDetails(e *colly.HTMLElement) ProductDetail {
 		})
 	})
 	productDescription := strings.TrimSpace(productDescriptionBuilder.String())
-
-	// Escapar comillas y eliminar saltos de línea
 	productDescription = strings.ReplaceAll(productDescription, "\"", "\"\"")
 	productDescription = strings.ReplaceAll(productDescription, "\n", " ")
 	
 	productShortDescription := e.ChildText("#product div.product-content-wrapper div.product-content div.name span")
+	productShortDescription = strings.ReplaceAll(productShortDescription, "\"", "\"\"")
+	productShortDescription = strings.ReplaceAll(productShortDescription, "\n", " ")
+
 	productImage := e.ChildAttr("#product div.product-content-wrapper div.product-image-wrapper div img", "src")
 	if strings.Contains(productImage, "image_not_available_web") {
 		productImage = ""
@@ -214,8 +215,17 @@ func extractProductDetails(e *colly.HTMLElement) ProductDetail {
 			}
 		})
 		value := strings.TrimSpace(valueBuilder.String())
+		value = regexp.MustCompile(`\s+`).ReplaceAllString(value, " ")
+		if value != "" {
+			valueBuilder.WriteString(value + " ")
+		}
 	
 		if param != "" && value != "" {
+			attributes[param] = strings.ReplaceAll(attributes[param], "\"", "\"\"")
+			attributes[param] = strings.ReplaceAll(attributes[param], "\n", " ")
+			value = strings.ReplaceAll(value, "\"", "\"\"")
+			value = strings.ReplaceAll(value, "\n", " ")
+			
 			attributes[param] = value
 		}
 	})
