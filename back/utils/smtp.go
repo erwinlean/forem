@@ -33,9 +33,9 @@ func SendEmail(to string, subject string, body string) error {
 
     log.Printf("SMTP Host: %s, SMTP Port: %s, From: %s", smtpHost, smtpPort, from)
 
-    // not sending html as we need. TODO
-    msg := "From: " + "" + "\n" +
-        "To: " + "" + "\n" +
+    // not working TODO
+    msg := "From: " + "forem@test.scrape" + "\n" + // make enything 
+        "To: " + to + "\n" + // this should be the user logged
         "Subject: " + subject + "\n\n" +
         "Content-Type: text/html; charset=UTF-8\n\n" +
         body

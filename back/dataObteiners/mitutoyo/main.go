@@ -18,13 +18,13 @@ func MainMitutoyo() []ProductDetail { // Changed the return type to []ProductDet
 	// accesorios: 
 	// mainURL := "https://shop.mitutoyo.mx/products/es_MX/1292249246959/Surftest%20SJ-210%20%5Bmm%5D/$catalogue/mitutoyoData/PR/178-560-11D/index.xhtml"
 	// "Software": 
-	// mainURL := "https://shop.mitutoyo.mx/products/es_MX/1292249246959/Surftest%20SJ-210%20%5Bmm%5D/$catalogue/mitutoyoData/PR/178-560-11D/index.xhtml"
+	 mainURL := "https://shop.mitutoyo.mx/products/es_MX/1292249246959/Surftest%20SJ-210%20%5Bmm%5D/$catalogue/mitutoyoData/PR/178-560-11D/index.xhtml"
 	// "Folleto, instrucciones, CAD": 
 	// mainURL := "https://shop.mitutoyo.mx/products/es_MX/01.02.07.01/164-163/$catalogue/mitutoyoData/PR/164-163/index.xhtml"
 	// prueba url de 101 productos:
 	// mainURL := "https://shop.mitutoyo.mx/products/es_MX/1298540172432/Sensor%20Systems/index.xhtml"
 	// second test urls
-	mainURL := "https://shop.mitutoyo.mx/products/es_MX/Surface_Measure_1008/Surface%20Measure/index.xhtml"
+	//mainURL := "https://shop.mitutoyo.mx/products/es_MX/Surface_Measure_1008/Surface%20Measure/index.xhtml"
 
 	ok := checkURL(mainURL)
 	if !ok {

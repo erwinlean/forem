@@ -1,9 +1,11 @@
 package middleware
 
 import (
+    "fmt"
     "net/http"
     "regexp"
     "strings"
+    "github.com/golang-jwt/jwt"
 )
 
 var EmailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$`)
@@ -13,8 +15,7 @@ func IsValidEmail(email string) bool {
 }
 
 func ContainsMaliciousContent(input string) bool {
-    // Aquí se puede agregar lógica adicional para verificar contenido malicioso.
-    return strings.Contains(input, "<script>") || strings.Contains(input, "</script>")
+    return strings.Contains(input, "<script>") || strings.Contains(input, "</script>") || strings.Contains(input, "|") || strings.Contains(input, "\n")|| strings.Contains(input, "INSERT")|| strings.Contains(input, "UPDATE")|| strings.Contains(input, "<>")
 }
 
 func ValidateUserInput(next http.Handler) http.Handler {
@@ -38,4 +39,19 @@ func ValidateUserInput(next http.Handler) http.Handler {
 
         next.ServeHTTP(w, r)
     })
+}
+
+func ValidateToken(tokenString, secretKey string) (*jwt.Token, error) {
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+        }
+        return []byte(secretKey), nil
+    })
+
+    if err != nil {
+        return nil, err
+    }
+
+    return token, nil
 }

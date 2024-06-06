@@ -1,13 +1,14 @@
 package controllers
 
 import (
-    "context"
-    "encoding/json"
-    "net/http"
+	"context"
+	"encoding/json"
+	"net/http"
 
-    "back/models"
-    "back/utils"
-    "go.mongodb.org/mongo-driver/bson"
+	"back/models"
+	"back/utils"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func fetchFileData(companyName string) ([]models.FileData, error) {

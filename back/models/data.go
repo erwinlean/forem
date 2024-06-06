@@ -7,5 +7,5 @@ type FileData struct {
     CompanyName string        `bson:"companyName,omitempty"`
     FileName    string        `bson:"fileName,omitempty"`
     UploadedAt  time.Time     `bson:"uploadedAt,omitempty"`
-    Data        []interface{} `bson:"data,omitempty"`
+    Data        interface{}   `bson:"data,omitempty"`
 }

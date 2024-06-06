@@ -2,13 +2,43 @@ package controllers
 
 import (
     "back/dataObteiners/mitutoyo"
+    "back/middleware"
     "back/utils"
+    "context"
     "encoding/json"
     "log"
     "net/http"
+    "time"
+
+    "go.mongodb.org/mongo-driver/bson"
+    "go.mongodb.org/mongo-driver/mongo/options"
 )
 
+func SaveOrUpdateFileData(companyName string, data []interface{}) error {
+    filter := bson.M{"companyName": companyName}
+    update := bson.M{
+        "$set": bson.M{
+            "companyName": companyName,
+            "fileName":    companyName + "_data.json",
+            "uploadedAt":  time.Now(),
+            "data":        data,
+        },
+    }
+    opts := options.Update().SetUpsert(true)
+
+    _, err := utils.FileDataCollection.UpdateOne(context.Background(), filter, update, opts)
+    return err
+}
+
 func Mitutoyo(w http.ResponseWriter, r *http.Request) {
+    userEmail := r.Header.Get("X-User-Email")
+    token := r.Header.Get("Authorization")
+    _, err := middleware.ValidateToken(userEmail, token)
+    if err != nil {
+        http.Error(w, "Unauthorized: Invalid token", http.StatusUnauthorized)
+        return
+    }
+
     data := mitutoyo.MainMitutoyo()
     if data == nil {
         log.Println("No data obtained from Mitutoyo scraping")
@@ -23,12 +53,26 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    recipientEmail := ""
+    recipientEmail := userEmail// this should the user logged
     subject := "Scraping Mitutoyo Complete"
-    body := "<html><body><div>" + string(dataJSON) + "</div></body></html>"
+    body := "hello from scrapper <html><body><div>" + string(dataJSON) + "</div></body></html>"
 
     err = utils.SendEmail(recipientEmail, subject, body)
     if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    // Convert the data to []interface{} for saving to MongoDB
+    var interfaceData []interface{}
+    for _, item := range data {
+        interfaceData = append(interfaceData, item)
+    }
+
+    // Save or update data in the database
+    err = SaveOrUpdateFileData("Mitutoyo", interfaceData)
+    if err != nil {
+        log.Printf("Error saving data to database: %v", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
