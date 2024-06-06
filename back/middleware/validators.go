@@ -1,11 +1,14 @@
 package middleware
 
 import (
-    "fmt"
-    "net/http"
-    "regexp"
-    "strings"
-    "github.com/golang-jwt/jwt"
+	"fmt"
+	"log"
+	"net/http"
+	"regexp"
+	"strings"
+    "errors"
+
+	"github.com/golang-jwt/jwt"
 )
 
 var EmailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$`)
@@ -41,16 +44,27 @@ func ValidateUserInput(next http.Handler) http.Handler {
     })
 }
 
-func ValidateToken(tokenString, secretKey string) (*jwt.Token, error) {
+func ValidateJWTToken(authHeader string, secretKey []byte) (*jwt.Token, error) {
+    log.Println("Validating token...")
+
+    parts := strings.Split(authHeader, " ")
+    if len(parts) != 2 || parts[0] != "Bearer" {
+        return nil, errors.New("invalid token format")
+    }
+    tokenString := parts[1]
+
     token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
         if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
             return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
         }
-        return []byte(secretKey), nil
+        return secretKey, nil
     })
-
     if err != nil {
         return nil, err
+    }
+
+    if !token.Valid {
+        return nil, errors.New("token is not valid")
     }
 
     return token, nil

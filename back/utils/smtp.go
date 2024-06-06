@@ -33,12 +33,13 @@ func SendEmail(to string, subject string, body string) error {
 
     log.Printf("SMTP Host: %s, SMTP Port: %s, From: %s", smtpHost, smtpPort, from)
 
-    // not working TODO
-    msg := "From: " + "forem@test.scrape" + "\n" + // make enything 
-        "To: " + to + "\n" + // this should be the user logged
-        "Subject: " + subject + "\n\n" +
-        "Content-Type: text/html; charset=UTF-8\n\n" +
-        body
+    // not working TODO the HTML as should
+    msg := "From: " + "forem@test.scrape" + "\n" +
+           "To: " + to + "\n" +
+           "Subject: " + subject + "\n" +
+           "MIME-Version: 1.0\n" +
+           "Content-Type: text/html; charset=UTF-8\n\n" +
+           body
 
     auth := smtp.PlainAuth("", from, password, smtpHost)
 

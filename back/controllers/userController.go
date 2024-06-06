@@ -14,7 +14,7 @@ import (
     "golang.org/x/crypto/bcrypt"
 )
 
-var jwtKey = []byte("todo") 
+var jwtKey = []byte("forem") 
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
     var user models.User
@@ -53,7 +53,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
     // jwt
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
         "username": result.Username,
-        "exp":      time.Now().Add(time.Hour * 168).Unix(),
+        "exp":      time.Now().Add(time.Hour * 24).Unix(),
     })
 
     tokenString, err := token.SignedString(jwtKey)
@@ -62,7 +62,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    w.Header().Set("Authorization", "Bearer "+tokenString)
+    log.Println("token generated on the loggin...")
+    log.Println(tokenString)
+    log.Println(jwtKey)
+
+    w.Header().Set("Authorization", "Bearer "+ tokenString)
 
     json.NewEncoder(w).Encode(struct {
         User  models.User `json:"user"`

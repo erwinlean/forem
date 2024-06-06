@@ -33,8 +33,14 @@ func SaveOrUpdateFileData(companyName string, data []interface{}) error {
 func Mitutoyo(w http.ResponseWriter, r *http.Request) {
     userEmail := r.Header.Get("X-User-Email")
     token := r.Header.Get("Authorization")
-    _, err := middleware.ValidateToken(userEmail, token)
+
+    log.Println("email and token obteined in the header of the request scrapper mitutoyo")
+    log.Println(userEmail)
+    log.Println(token)
+
+    _, err := middleware.ValidateJWTToken(token, jwtKey)
     if err != nil {
+        log.Println("Token validation failed:", err)
         http.Error(w, "Unauthorized: Invalid token", http.StatusUnauthorized)
         return
     }
@@ -53,7 +59,7 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    recipientEmail := userEmail// this should the user logged
+    recipientEmail := userEmail
     subject := "Scraping Mitutoyo Complete"
     body := "hello from scrapper <html><body><div>" + string(dataJSON) + "</div></body></html>"
 
@@ -63,13 +69,12 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Convert the data to []interface{} for saving to MongoDB
     var interfaceData []interface{}
     for _, item := range data {
         interfaceData = append(interfaceData, item)
     }
 
-    // Save or update data in the database
+    // db
     err = SaveOrUpdateFileData("Mitutoyo", interfaceData)
     if err != nil {
         log.Printf("Error saving data to database: %v", err)
