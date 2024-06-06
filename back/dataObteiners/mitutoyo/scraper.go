@@ -1,4 +1,4 @@
-package main
+package mitutoyo
 
 import (
 	"log"
@@ -10,7 +10,7 @@ import (
 
 var (
 	allScrapedURLs     = make(map[string]bool)
-	allScrapedProducts = make(map[string]bool)
+	allScrapedProducts = make(map[string]ProductDetail)
 )
 
 var urlCounts int = 0
@@ -21,7 +21,7 @@ func scrapeRecursive(url string) {
 	}
 
 	urlCounts++
-	log.Printf("Processed URL #%d: %s", urlCounts, url)
+	//log.Printf("Processed URL #%d: %s", urlCounts, url)
 
 	subURLs, products := scrapeCategories(url)
 	allScrapedURLs[url] = true
@@ -31,7 +31,7 @@ func scrapeRecursive(url string) {
 	}
 
 	for _, product := range products {
-		allScrapedProducts[product.URL] = true
+		allScrapedProducts[product.URL] = product // to test
 	}
 }
 
@@ -73,9 +73,12 @@ func scrapeCategories(url string) ([]string, []ProductDetail) {
 	// Product data
 	c.OnHTML("#product", func(e *colly.HTMLElement) {
 		product := extractProductDetails(e)
-		writeCSV("products.csv", product)
+		// to modify this csv need to be at same level the email sended, we going to send the csv in the email
+		// to go to scrapController
+//		writeCSV("products.csv", product) 
 		products = append(products, product)
 
+		// this functions is for test only to delete and delete in utils
 		printProductDetails(product)
 	})
 

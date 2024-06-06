@@ -1,4 +1,4 @@
-package main
+package mitutoyo
 
 // ProductDetail represents the details of a product
 type ProductDetail struct {

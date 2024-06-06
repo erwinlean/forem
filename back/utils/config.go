@@ -12,6 +12,7 @@ import (
 )
 
 var UserCollection *mongo.Collection
+var FileDataCollection *mongo.Collection
 
 func init() {
     err := godotenv.Load()
@@ -30,16 +31,11 @@ func init() {
         panic(err)
     }
 
-    defer func() {
-        if err = client.Disconnect(context.TODO()); err != nil {
-            panic(err)
-        }
-    }()
-
     if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{Key: "ping", Value: 1}}).Err(); err != nil {
         panic(err)
     }
 
-    log.Println("Conectado a la base de datos MongoDB")
+    log.Println("Conectado MongoDB")
     UserCollection = client.Database("foremDB").Collection("users")
+    FileDataCollection = client.Database("foremDB").Collection("filedata")
 }

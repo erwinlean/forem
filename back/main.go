@@ -3,7 +3,9 @@ package main
 import (
     "log"
     "net/http"
+    "os"
 
+    "back/middleware"
     "back/routers"
 )
 
@@ -12,11 +14,17 @@ func main() {
     scrapperRouter := routers.ScrapperRouter()
     dataRouter := routers.ShowData()
 
-    // Show delete the warning/error for not use the routers
-    log.Print(scrapperRouter, dataRouter)
+    mainRouter := http.NewServeMux()
+    mainRouter.Handle("/users/", middleware.LoggingMiddleware(middleware.ValidateUserInput(userRouter)))
+    mainRouter.Handle("/scrapper/", middleware.LoggingMiddleware(http.StripPrefix("/scrapper", scrapperRouter)))
+    mainRouter.Handle("/data/", middleware.LoggingMiddleware(dataRouter))
     
-    log.Println("Port :8080")
-    log.Fatal(http.ListenAndServe(":8080", userRouter))
-    log.Fatal(http.ListenAndServe(":8080", scrapperRouter))
-    log.Fatal(http.ListenAndServe(":8080", dataRouter))
+    corsRouter := middleware.CorsMiddleware(mainRouter)
+
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8000"
+    }
+    log.Printf("Listening on port %s...\n", port)
+    log.Fatal(http.ListenAndServe(":"+port, corsRouter))
 }
