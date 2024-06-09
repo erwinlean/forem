@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -45,8 +44,6 @@ func ValidateUserInput(next http.Handler) http.Handler {
 }
 
 func ValidateJWTToken(authHeader string, secretKey []byte) (*jwt.Token, error) {
-    log.Println("Validating token...")
-
     parts := strings.Split(authHeader, " ")
     if len(parts) != 2 || parts[0] != "Bearer" {
         return nil, errors.New("invalid token format")

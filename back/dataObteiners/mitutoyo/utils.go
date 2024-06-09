@@ -1,17 +1,19 @@
 package mitutoyo
 
 import (
+    "net/http"
+	"time"
 	"encoding/csv"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"strings"
-	"time"
 )
 
-func writeCSV(filename string, product ProductDetail) {
-	if _, exists := allScrapedProducts[product.URL]; exists {
+var allScrappedProducts = make(map[string]bool)
+
+func WriteCSV(filename string, product ProductDetail) {
+	if _, exists := allScrappedProducts[product.URL]; exists {
 		log.Printf("El producto ya existe en el archivo CSV: %s", product.URL)
 		return
 	}
@@ -23,6 +25,7 @@ func writeCSV(filename string, product ProductDetail) {
 	defer file.Close()
 
 	writer := csv.NewWriter(file)
+	defer writer.Flush()
 
 	fileInfo, err := file.Stat()
 	if err != nil {
@@ -67,7 +70,7 @@ func writeCSV(filename string, product ProductDetail) {
 		instructionPDFLinks,
 		accesories,
 		youtubeLinks,
-		softwareLinks, 
+		softwareLinks,
 		serializedAttributes,
 	}
 	err = writer.Write(record)
@@ -76,7 +79,7 @@ func writeCSV(filename string, product ProductDetail) {
 		return
 	}
 
-	writer.Flush()
+	allScrappedProducts[product.URL] = true
 }
 
 func checkURL(url string) bool {

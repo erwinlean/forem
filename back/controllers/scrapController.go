@@ -4,6 +4,9 @@ import (
     "back/dataObteiners/mitutoyo"
     "back/middleware"
     "back/utils"
+    "back/models"
+
+    "os"
     "context"
     "encoding/json"
     "log"
@@ -34,11 +37,16 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
     userEmail := r.Header.Get("X-User-Email")
     token := r.Header.Get("Authorization")
 
-    log.Println("email and token obteined in the header of the request scrapper mitutoyo")
-    log.Println(userEmail)
-    log.Println(token)
+    var user models.User
+    filter := bson.M{"email": userEmail}
+    err := utils.UserCollection.FindOne(context.Background(), filter).Decode(&user)
+    if err != nil {
+        log.Println("User not found:", err)
+        http.Error(w, "User not found", http.StatusNotFound)
+        return
+    }
 
-    _, err := middleware.ValidateJWTToken(token, jwtKey)
+    _, err = middleware.ValidateJWTToken(token, jwtKey)
     if err != nil {
         log.Println("Token validation failed:", err)
         http.Error(w, "Unauthorized: Invalid token", http.StatusUnauthorized)
@@ -52,6 +60,16 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // test csv
+    // 1- ver funcionamiento correcto funcion EmailStyle > funciono, mejorar ui.
+    // 2- ver que funciona la creacion csv > creado el csv de forma correct en back/products.csv (main path)
+    // 3- ver envio atachment de csv
+    csvFile := "products.csv"
+	for i := 0; i < len(data); i++ {
+		log.Println(data[i])
+		mitutoyo.WriteCSV(csvFile, data[i])
+	}   
+
     dataJSON, err := json.MarshalIndent(data, "", "  ")
     if err != nil {
         log.Printf("Error converting data to JSON: %v", err)
@@ -60,8 +78,8 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
     }
 
     recipientEmail := userEmail
-    subject := "Scraping Mitutoyo Complete"
-    body := "hello from scrapper <html><body><div>" + string(dataJSON) + "</div></body></html>"
+    subject := "Scraping Mitutoyo Complete user " + user.Username
+    body := utils.EmailStyle(user.Username, "Mitutoyo", string(dataJSON))
 
     err = utils.SendEmail(recipientEmail, subject, body)
     if err != nil {
@@ -81,6 +99,12 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
+
+    // remove csv
+    err = os.Remove(csvFile)
+	if err != nil {
+		log.Printf("Error deleting the CSV file: %v", err)
+	}
 
     w.Header().Set("Content-Type", "application/json")
     if err := json.NewEncoder(w).Encode(data); err != nil {

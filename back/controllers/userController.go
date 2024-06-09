@@ -62,10 +62,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    log.Println("token generated on the loggin...")
-    log.Println(tokenString)
-    log.Println(jwtKey)
-
     w.Header().Set("Authorization", "Bearer "+ tokenString)
 
     json.NewEncoder(w).Encode(struct {

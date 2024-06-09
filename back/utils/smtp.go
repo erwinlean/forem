@@ -37,8 +37,7 @@ func SendEmail(to string, subject string, body string) error {
     msg := "From: " + "forem@test.scrape" + "\n" +
            "To: " + to + "\n" +
            "Subject: " + subject + "\n" +
-           "MIME-Version: 1.0\n" +
-           "Content-Type: text/html; charset=UTF-8\n\n" +
+           "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n" +
            body
 
     auth := smtp.PlainAuth("", from, password, smtpHost)

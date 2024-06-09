@@ -35,7 +35,7 @@ func init() {
         panic(err)
     }
 
-    log.Println("Conectado MongoDB")
+    log.Println("Connected MongoDB")
     UserCollection = client.Database("foremDB").Collection("users")
     FileDataCollection = client.Database("foremDB").Collection("filedata")
 }
