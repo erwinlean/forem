@@ -3,15 +3,15 @@ package controllers
 import (
     "back/dataObteiners/mitutoyo"
     "back/middleware"
-    "back/utils"
     "back/models"
+    "back/utils"
 
-    "os"
     "context"
     "encoding/json"
     "log"
     "net/http"
     "time"
+    "os"
 
     "go.mongodb.org/mongo-driver/bson"
     "go.mongodb.org/mongo-driver/mongo/options"
@@ -60,28 +60,15 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // test csv
-    // 1- ver funcionamiento correcto funcion EmailStyle > funciono, mejorar ui.
-    // 2- ver que funciona la creacion csv > creado el csv de forma correct en back/products.csv (main path)
-    // 3- ver envio atachment de csv
-    csvFile := "products.csv"
-	for i := 0; i < len(data); i++ {
-		log.Println(data[i])
-		mitutoyo.WriteCSV(csvFile, data[i])
-	}   
-
-    dataJSON, err := json.MarshalIndent(data, "", "  ")
-    if err != nil {
-        log.Printf("Error converting data to JSON: %v", err)
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
+    csvFile := "mitutoyo_data.csv"
+    for i := 0; i < len(data); i++ {
+        mitutoyo.WriteCSV(csvFile, data[i])
     }
 
     recipientEmail := userEmail
-    subject := "Scraping Mitutoyo Complete user " + user.Username
-    body := utils.EmailStyle(user.Username, "Mitutoyo", string(dataJSON))
-
-    err = utils.SendEmail(recipientEmail, subject, body)
+    subject := "Scraping Mitutoyo Completada " + user.Username
+    body := utils.EmailStyle(user.Username, "Mitutoyo")
+    err = utils.SendEmail(recipientEmail, subject, body, csvFile)
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
@@ -100,11 +87,11 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // remove csv
-    err = os.Remove(csvFile)
-	if err != nil {
-		log.Printf("Error deleting the CSV file: %v", err)
-	}
+    err = os.Truncate(csvFile, 0)
+    if err != nil {
+        log.Printf("Error clearing the CSV file: %v", err)
+    }
+    mitutoyo.ResetScrappedProducts()
 
     w.Header().Set("Content-Type", "application/json")
     if err := json.NewEncoder(w).Encode(data); err != nil {
@@ -112,6 +99,7 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
+
     log.Println("Response sent successfully.")
 }
 
@@ -120,7 +108,7 @@ func Cosensaws(w http.ResponseWriter, r *http.Request) {
     response := map[string]string{"message": "Hello test!"}
     json.NewEncoder(w).Encode(response)
 
-    err := utils.SendEmail("recipient@example.com", "Scraping Cosensaws complete", "Scraping Cosensaws has been completed successfully!")
+    err := utils.SendEmail("recipient@example.com", "Scraping Cosensaws complete", "Scraping Cosensaws has been completed successfully!","")
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
@@ -135,7 +123,7 @@ func Fluke(w http.ResponseWriter, r *http.Request) {
     response := map[string]string{"message": "Hello test!"}
     json.NewEncoder(w).Encode(response)
 
-    err := utils.SendEmail("recipient@example.com", "Scraping Fluke complete", "Scraping Fluke has been completed successfully!")
+    err := utils.SendEmail("recipient@example.com", "Scraping Fluke complete", "Scraping Fluke has been completed successfully!","")
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
@@ -150,7 +138,7 @@ func Kinkelder(w http.ResponseWriter, r *http.Request) {
     response := map[string]string{"message": "Hello test!"}
     json.NewEncoder(w).Encode(response)
 
-    err := utils.SendEmail("recipient@example.com", "Scraping Kinkelder complete", "Scraping Kinkelder has been completed successfully!")
+    err := utils.SendEmail("recipient@example.com", "Scraping Kinkelder complete", "Scraping Kinkelder has been completed successfully!","")
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return

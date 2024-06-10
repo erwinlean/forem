@@ -12,6 +12,10 @@ import (
 
 var allScrappedProducts = make(map[string]bool)
 
+func ResetScrappedProducts() {
+    allScrappedProducts = make(map[string]bool)
+}
+
 func WriteCSV(filename string, product ProductDetail) {
 	if _, exists := allScrappedProducts[product.URL]; exists {
 		log.Printf("El producto ya existe en el archivo CSV: %s", product.URL)
