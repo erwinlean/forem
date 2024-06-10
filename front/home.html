@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="./functions/home.js"></script>
 
-    <title>Forem</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="shortcut icon" href="./assets/random-logo.png" type="image/x-icon">
+  <title>Forem</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./style/index.css">
+  <link rel="shortcut icon" href="./assets/random-logo.png" type="image/x-icon">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./style/index.css">
 </head>
 <body>
   <div class="flex h-screen w-full">
@@ -17,10 +19,10 @@
       <div class="flex items-center">
         <div class="flex justify-center items-center">
           <img src="./assets/forem_logo.png" alt="Logo" width="120" height="50" class="text-gray-50" style="object-fit: cover;"/>
-      </div>
+        </div>
       </div>
       <div style="padding-top: 55px;" class="mt-8 flex flex-col gap-4">
-        <button style="padding: 22px 17px;" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex-1 bg-gray-800 hover:bg-gray-700">Iniciar scrapping Mitutoyo</button>
+        <button id="scrapping_mitutoyo" style="padding: 22px 17px;" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex-1 bg-gray-800 hover:bg-gray-700">Iniciar scrapping Mitutoyo</button>
         <button style="padding: 22px 17px;" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex-1 bg-gray-800 hover:bg-gray-700">Iniciar scrapping Cosensaws</button>
         <button style="padding: 22px 17px;" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex-1 bg-gray-800 hover:bg-gray-700">Iniciar scrapping Fluke</button>
         <button style="padding: 22px 17px;" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex-1 bg-gray-800 hover:bg-gray-700">Iniciar scrapping Kinkelder</button>
@@ -28,10 +30,13 @@
     </div>
     <div class="flex-1 bg-gray-800 p-6 text-white">
       <header class="flex items-center justify-between">
-        <div class="flex justify-end ml-auto">
+        <div class="flex justify-end ml-auto gap-4">
           <a href="">
-            <img src="./assets/user_logo.png" style="width: 60px;" alt="user logo" title="user logo" class="user-logo">
+            <img src="./assets/user_logo.png" style="width: 30px;" alt="user logo" title="user logo" class="user-logo">
           </a>
+          <a href="#" id="logout-button">
+            <img src="./assets/logout.png" style="width: 30px;" alt="user logo" title="user logo" class="user-logo">
+          </a>          
         </div>
       </header>      
     <main class="mt-6">
@@ -116,6 +121,6 @@
         </div>
       </main>
     </div>
-  </div>
+  </div>  
 </body>
 </html>

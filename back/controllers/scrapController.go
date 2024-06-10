@@ -46,7 +46,7 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    _, err = middleware.ValidateJWTToken(token, jwtKey)
+    _, err = middleware.ValidateJWTToken("Bearer " + token, jwtKey)
     if err != nil {
         log.Println("Token validation failed:", err)
         http.Error(w, "Unauthorized: Invalid token", http.StatusUnauthorized)
