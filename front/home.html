@@ -11,10 +11,14 @@
   <link rel="shortcut icon" href="./assets/random-logo.png" type="image/x-icon">
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+
   <link rel="stylesheet" href="./style/index.css">
 </head>
 <body>
-  <div class="flex h-screen w-full">
+  <div class="flex w-full">
     <div class="flex flex-col bg-gray-900 p-6 text-white">
       <div class="flex items-center">
         <div class="flex justify-center items-center">
@@ -45,12 +49,12 @@
       </div>
       <div class="mt-6 flex justify-between">
         <div class="flex gap-2">
-          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">yy/mm/dd datos Mitutoyo</button>
-          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">yy/mm/dd datos Cosensaws</button>
-          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">yy/mm/dd datos Fluke</button>
-          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">yy/mm/dd datos Kinkelder</button>
+          <button id="dateMitutoyoData" class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">00/00/00 datos Mitutoyo</button>
+          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">00/00/00 datos Cosensaws</button>
+          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">00/00/00 datos Fluke</button>
+          <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">00/00/00 datos Kinkelder</button>
           <div class="relative">
-            <input class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-900 pr-8" placeholder="Buscar producto" type="text"/>
+            <input id="searcher" class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-gray-900 pr-8" placeholder="Buscar producto" type="text"/>
           </div>
         </div>
       </div>
@@ -60,67 +64,41 @@
             <thead class="[&_tr]:border-b">
               <tr class="border-b bg-gray-900 transition-colors">
                 <th class="h-12 px-4 text-left align-middle font-medium text-strong">URL</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Número de Artículo</th>
                 <th class="h-12 px-4 text-left align-middle font-medium text-strong">Nombre</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Descripcion</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Descripcion Corta</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Imagen principal</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Imagenes</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Imagen tecnica</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Descripción</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Descripción Corta</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Imagen Principal</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Imagen Técnica</th>
                 <th class="h-12 px-4 text-left align-middle font-medium text-strong">Variantes</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Enlaces de Folletos</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Enlaces de Instrucciones PDF</th>
                 <th class="h-12 px-4 text-left align-middle font-medium text-strong">Accesorios</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Imagenes extras</th>
                 <th class="h-12 px-4 text-left align-middle font-medium text-strong">Videos</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Software zip</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Detalles</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Enlaces</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Intrucciones PDF</th>
+                <th class="h-12 px-4 text-left align-middle font-medium text-strong">Enlaces de Software</th>
               </tr>
             </thead>
             <!-- this will came as json from the backend-->
-            <tbody class="[&_tr:last-child]:border-0">
-              <tr class="border-b transition-colors">
-                <td class="p-4 align-middle">https://example.com</td>
-                <td class="p-4 align-middle">Example Website</td>
-                <td class="p-4 align-middle">This is an example website.</td>
-                <td class="p-4 align-middle">example, website, landing page</td>
-                <td class="p-4 align-middle">3</td>
-                <td class="p-4 align-middle">10</td>
-                <td class="p-4 align-middle">1</td>
-                <td class="p-4 align-middle">2</td>
-                <td class="p-4 align-middle">3</td>
-                <td class="p-4 align-middle">200</td>
-                <td class="p-4 align-middle">10</td>
-                <td class="p-4 align-middle">1</td>
-                <td class="p-4 align-middle">2</td>
-                <td class="p-4 align-middle">200</td>
-              </tr>
-              <tr class="border-b transition-colors">
-                <td class="p-4 align-middle">https://example.com</td>
-                <td class="p-4 align-middle">Example Website</td>
-                <td class="p-4 align-middle">This is an example website.</td>
-                <td class="p-4 align-middle">example, website, landing page</td>
-                <td class="p-4 align-middle">3</td>
-                <td class="p-4 align-middle">10</td>
-                <td class="p-4 align-middle">1</td>
-                <td class="p-4 align-middle">2</td>
-                <td class="p-4 align-middle">3</td>
-                <td class="p-4 align-middle">200</td>
-                <td class="p-4 align-middle">10</td>
-                <td class="p-4 align-middle">1</td>
-                <td class="p-4 align-middle">2</td>
-                <td class="p-4 align-middle">3</td>
-              </tr>
-            </tbody>
+            <tbody class="[&_tr:last-child]:border-0"></tbody>
           </table>
+          <div id="pagination-controls" class="flex items-center justify-start mt-4">
+            <button id="prevPage" disabled class="px-4 py-2 rounded-l-md bg-gray-500 text-white cursor-pointer focus:outline-none hover:bg-gray-600">Previous</button>
+            <span id="pageNumber" class="mx-4 text-lg font-bold"></span>
+            <button id="nextPage" class="px-4 py-2 rounded-r-md bg-gray-500 text-white cursor-pointer focus:outline-none hover:bg-gray-600">Next</button>
+          </div>          
         </div>        
       </div>
         <div class="mt-6 flex justify-between">
           <div class="flex gap-2">
-            <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">Exportar datos csv</button>
-            <button class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">Exportar datos xlsx</button> 
+            <button id="csv_export" class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">Exportar datos csv</button>
+            <button id="excel_export" class="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary-foreground h-10 px-4 py-2 flex items-center gap-2 bg-gray-900 hover:bg-gray-700">Exportar datos xlsx</button> 
           </div>
         </div>
       </main>
     </div>
   </div>  
+
+  <script src="./functions/dataFunctions.js"></script>
 </body>
 </html>

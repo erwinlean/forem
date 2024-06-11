@@ -17,7 +17,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
         const data = await response.json();
         const token = data.token;
         localStorage.setItem('token', token);
-        localStorage.setItem('email', email);  // Guardar el email
+        localStorage.setItem('email', email); 
         localStorage.setItem('token-timestamp', Date.now());
         window.location.href = 'home.html';
     } else {
