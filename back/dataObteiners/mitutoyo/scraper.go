@@ -1,7 +1,7 @@
 package mitutoyo
 
 import (
-	"log"
+	//"log"
 	"strings"
 	"regexp"
 
@@ -91,9 +91,11 @@ func scrapeCategories(url string) ([]string, []ProductDetail) {
 func extractProductDetails(e *colly.HTMLElement) ProductDetail {
 	productURL := e.Request.URL.String()
 	urlCounts++
-	log.Printf("Processed URL #%d: %s", urlCounts, productURL)
+	// log.Printf("Processed URL #%d: %s", urlCounts, productURL)
 
 	productArticleNumber := e.ChildText("#product div.product-content-wrapper div.product-content div.articlenumber h2 span.value")
+	productArticleNumber = "10-" + productArticleNumber // added 10- (mitutoyo code for forem)
+
 	productName := e.ChildText("#product div.product-content-wrapper div.product-content div.name h2")
 	productName = strings.ReplaceAll(productName, "\"", "\"\"")
 	productName = strings.ReplaceAll(productName, "\n", " ")

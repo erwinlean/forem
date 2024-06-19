@@ -1,11 +1,11 @@
 package middleware
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
-    "errors"
 
 	"github.com/golang-jwt/jwt"
 )

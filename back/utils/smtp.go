@@ -7,8 +7,10 @@ import (
     "io"
     "io/ioutil"
     "log"
+    "mime/multipart"
     "mime/quotedprintable"
     "net/smtp"
+    "net/textproto"
     "net/url"
     "os"
     "strings"
@@ -20,7 +22,7 @@ func LoadEnv() error {
     return godotenv.Load()
 }
 
-func SendEmail(to string, subject string, body string, attachmentPath string) error {
+func SendEmail(to string, subject string, body string, attachmentPath string, newAttachmentPath string) error {
     err := LoadEnv()
     if err != nil {
         return fmt.Errorf("failed to load .env file: %v", err)
@@ -36,45 +38,65 @@ func SendEmail(to string, subject string, body string, attachmentPath string) er
     smtpHost := mailerURL.Hostname()
     smtpPort := mailerURL.Port()
 
-    log.Printf("SMTP Host: %s, SMTP Port: %s, From: %s", smtpHost, smtpPort, from)
-
-    // Leer el archivo CSV y codificarlo en base64
     csvData, err := ioutil.ReadFile(attachmentPath)
     if err != nil {
         return fmt.Errorf("failed to read attachment: %v", err)
     }
-    encodedAttachment := base64.StdEncoding.EncodeToString(csvData)
 
-    boundary := "my-boundary-1234567890"
+    newCsvData, err := ioutil.ReadFile(newAttachmentPath)
+    if err != nil {
+        return fmt.Errorf("failed to read new attachment: %v", err)
+    }
 
-    // Construir el mensaje de email con el adjunto
+    // build
     var msg strings.Builder
-    msg.WriteString("From: " + "scrapping@forem" + "\n")
+    msg.WriteString("From: " + "forem@scrapping" + "\n")
     msg.WriteString("To: " + to + "\n")
     msg.WriteString("Subject: " + subject + "\n")
     msg.WriteString("MIME-Version: 1.0\n")
-    msg.WriteString("Content-Type: multipart/mixed; boundary=" + boundary + "\n\n")
 
-    // Parte del cuerpo del email
-    msg.WriteString("--" + boundary + "\n")
-    msg.WriteString("Content-Type: text/html; charset=\"UTF-8\"\n")
-    msg.WriteString("Content-Transfer-Encoding: quoted-printable\n\n")
-    writeQuotedPrintable(&msg, body)
-    msg.WriteString("\n\n")
+    writer := multipart.NewWriter(&msg)
+    boundary := writer.Boundary()
+    msg.WriteString(fmt.Sprintf("Content-Type: multipart/mixed; boundary=%s\n\n", boundary))
 
-    // Parte del adjunto
-    msg.WriteString("--" + boundary + "\n")
-    msg.WriteString("Content-Type: text/csv; name=\"" + attachmentPath + "\"\n")
-    msg.WriteString("Content-Transfer-Encoding: base64\n")
-    msg.WriteString("Content-Disposition: attachment; filename=\"" + attachmentPath + "\"\n\n")
-    msg.WriteString(encodedAttachment)
-    msg.WriteString("\n\n")
-    msg.WriteString("--" + boundary + "--")
+    bodyHeader := make(textproto.MIMEHeader)
+    bodyHeader.Set("Content-Type", "text/html; charset=\"UTF-8\"")
+    bodyHeader.Set("Content-Transfer-Encoding", "quoted-printable")
+    bodyPart, err := writer.CreatePart(bodyHeader)
+    if err != nil {
+        return fmt.Errorf("failed to create body part: %v", err)
+    }
+    writeQuotedPrintable(bodyPart, body)
+
+    attachmentHeader := make(textproto.MIMEHeader)
+    attachmentHeader.Set("Content-Type", "text/csv")
+    attachmentHeader.Set("Content-Transfer-Encoding", "base64")
+    attachmentHeader.Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", attachmentPath))
+    attachmentPart, err := writer.CreatePart(attachmentHeader)
+    if err != nil {
+        return fmt.Errorf("failed to create attachment part: %v", err)
+    }
+    encodeAndWriteBase64(attachmentPart, csvData)
+
+    newAttachmentHeader := make(textproto.MIMEHeader)
+    newAttachmentHeader.Set("Content-Type", "text/csv")
+    newAttachmentHeader.Set("Content-Transfer-Encoding", "base64")
+    newAttachmentHeader.Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", newAttachmentPath))
+    newAttachmentPart, err := writer.CreatePart(newAttachmentHeader)
+    if err != nil {
+        return fmt.Errorf("failed to create new attachment part: %v", err)
+    }
+    encodeAndWriteBase64(newAttachmentPart, newCsvData)
+
+    err = writer.Close()
+    if err != nil {
+        return fmt.Errorf("failed to close writer: %v", err)
+    }
 
     auth := smtp.PlainAuth("", from, password, smtpHost)
 
     tlsConfig := &tls.Config{
-        InsecureSkipVerify: true, // 4 test
+        InsecureSkipVerify: true, // test
         ServerName:         smtpHost,
     }
 
@@ -120,4 +142,10 @@ func writeQuotedPrintable(w io.Writer, body string) {
     qpw := quotedprintable.NewWriter(w)
     defer qpw.Close()
     _, _ = qpw.Write([]byte(body))
+}
+
+func encodeAndWriteBase64(w io.Writer, data []byte) {
+    b := make([]byte, base64.StdEncoding.EncodedLen(len(data)))
+    base64.StdEncoding.Encode(b, data)
+    w.Write(b)
 }

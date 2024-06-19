@@ -16,10 +16,13 @@ func ResetScrappedProducts() {
     allScrappedProducts = make(map[string]bool)
 }
 
-func WriteCSV(filename string, product ProductDetail) {
-	if _, exists := allScrappedProducts[product.URL]; exists {
-		log.Printf("El producto ya existe en el archivo CSV: %s", product.URL)
-		return
+func WriteCSV(filename string, fileNumber int ,product ProductDetail) {
+
+	if(fileNumber == 0){
+		if _, exists := allScrappedProducts[product.URL]; exists {
+			log.Printf("El producto ya existe en el archivo CSV: %s", product.URL)
+			return
+		}
 	}
 
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)

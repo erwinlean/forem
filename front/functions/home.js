@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const token = localStorage.getItem('token');
       const email = localStorage.getItem('email');
 
-      const response = await fetch('http://127.0.0.1:8000/scrapper/mitutoyo', {
+    const response = await fetch('https://inevitable-sukey-erwin-9f629ae2.koyeb.app/scrapper/mitutoyo', {
+      //const response = await fetch('http://127.0.0.1:8000/scrapper/mitutoyo', {
           method: 'GET',
           headers: {
               'Authorization': token,

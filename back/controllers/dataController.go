@@ -11,9 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func fetchFileData(companyName string) ([]models.FileData, error) {
-    var results []models.FileData
-    filter := bson.M{"companyName": companyName}
+func fetchFileData(company string) ([]models.ProductData, error) {
+    var results []models.ProductData
+    filter := bson.M{"company": company}
     cursor, err := utils.FileDataCollection.Find(context.Background(), filter)
     if err != nil {
         return nil, err
@@ -21,7 +21,7 @@ func fetchFileData(companyName string) ([]models.FileData, error) {
     defer cursor.Close(context.Background())
 
     for cursor.Next(context.Background()) {
-        var fileData models.FileData
+        var fileData models.ProductData
         if err := cursor.Decode(&fileData); err != nil {
             return nil, err
         }
@@ -42,6 +42,27 @@ func MitutoyoData(w http.ResponseWriter, r *http.Request) {
         return
     }
     json.NewEncoder(w).Encode(data)
+}
+
+func RemoveAllMitutoyoData(w http.ResponseWriter, r *http.Request) {
+	filter := bson.M{"companyName": "Mitutoyo"}
+
+	// DeleteMany ejecuta la eliminación de todos los documentos que coincidan con el filtro
+	result, err := utils.FileDataCollection.DeleteMany(context.Background(), filter)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Informar sobre la cantidad de documentos eliminados
+	response := map[string]interface{}{
+		"message":          "Deleted all Mitutoyo data successfully",
+		"deletedDocuments": result.DeletedCount,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func CosensawsData(w http.ResponseWriter, r *http.Request) {

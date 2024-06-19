@@ -2,11 +2,12 @@
 
 let productsData = [];
 let currentPage = 1;
-const itemsPerPage = 10;
+const itemsPerPage = 25;
 
 const getData = async () => {
     try {
-        const response = await fetch('http://127.0.0.1:8000/data/mitutoyo', {
+        const response = await fetch('https://inevitable-sukey-erwin-9f629ae2.koyeb.app/data/mitutoyo', {
+        //const response = await fetch('http://127.0.0.1:8000/data/mitutoyo', {
             method: 'GET'
         });
         if (response.ok) {//dateMitutoyoData

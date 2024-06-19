@@ -13,5 +13,7 @@ func ShowData() *mux.Router {
     router.HandleFunc("/fluke", controllers.FlukeData).Methods("GET")
     router.HandleFunc("/kinkelder", controllers.KinkelderData).Methods("GET")
 
+    router.HandleFunc("/mitutoyo", controllers.RemoveAllMitutoyoData).Methods("DELETE")
+
     return router
 }
