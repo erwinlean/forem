@@ -7,18 +7,20 @@ const itemsPerPage = 25;
 const getData = async () => {
     try {
         const response = await fetch('https://inevitable-sukey-erwin-9f629ae2.koyeb.app/data/mitutoyo', {
-        //const response = await fetch('http://127.0.0.1:8000/data/mitutoyo', {
             method: 'GET'
         });
-        if (response.ok) {//dateMitutoyoData
+        if (response.ok) {
             const jsonData = await response.json();
-            productsData = jsonData[0].Data;
-            let productDate = jsonData[0].UploadedAt
-            formatISODateToHumanReadable(productDate)
+            console.log(jsonData);
+
+            // Extraer los productos del JSON en el nuevo formato
+            productsData = jsonData.flatMap(company => company.Products);
+            let productDate = jsonData[0].UploadedAt;
+            formatISODateToHumanReadable(productDate);
             displayPage(currentPage);
             updatePaginationControls();
 
-            console.log(productsData)
+            console.log(productsData);
         } else {
             alert('Error al obtener los datos');
         }
@@ -30,26 +32,29 @@ const getData = async () => {
 const insertDataIntoTable = (dataSubset) => {
     const tableBody = document.querySelector('tbody');
     tableBody.innerHTML = '';
+
     dataSubset.forEach(dataRow => {
         const newRow = document.createElement('tr');
         newRow.classList.add('border-b', 'transition-colors');
+
         const columns = [
-            'url', 'articlenumber', 'name', 'description', 'shortdescription', 
-            'image', 'technicalimage', 'variants', 'leafletlinks', 
-            'instructionpdflinks', 'accesories', 'imagelinks', 
-            'youtubelinks', 'softwarelinks'
+            'URL', 'ArticleNumber', 'Name', 'Description', 'ShortDescription', 
+            'Image', 'TechnicalImage', 'Variants', 'LeafLetLinks', 
+            'InstructionPDFLinks', 'Accesories', 'ImageLinks', 
+            'YoutubeLinks', 'SoftwareLinks'
         ];
+
         columns.forEach(column => {
             const cell = document.createElement('td');
-            cell.classList.add('p-4', 'align-middle');
-            const cellData = dataRow.find(item => item.Key === column)?.Value || '';
+            cell.classList.add('p-4', 'align-middle', 'table-cell');
+            let cellData = dataRow[column] || '';
             if (Array.isArray(cellData)) {
-                cell.textContent = cellData.join(', ');
-            } else {
-                cell.textContent = cellData;
+                cellData = cellData.join(', ');
             }
+            cell.textContent = cellData;
             newRow.appendChild(cell);
         });
+
         tableBody.appendChild(newRow);
     });
 };
@@ -61,11 +66,13 @@ const displayPage = (pageNumber) => {
     insertDataIntoTable(pageData);
     document.getElementById('pageNumber').textContent = pageNumber;
 };
+
 const updatePaginationControls = () => {
     const totalPages = Math.ceil(productsData.length / itemsPerPage);
     document.getElementById('prevPage').disabled = currentPage === 1;
     document.getElementById('nextPage').disabled = currentPage === totalPages;
 };
+
 document.getElementById('prevPage').addEventListener('click', () => {
     if (currentPage > 1) {
         currentPage--;
@@ -73,6 +80,7 @@ document.getElementById('prevPage').addEventListener('click', () => {
         updatePaginationControls();
     }
 });
+
 document.getElementById('nextPage').addEventListener('click', () => {
     const totalPages = Math.ceil(productsData.length / itemsPerPage);
     if (currentPage < totalPages) {
@@ -81,6 +89,7 @@ document.getElementById('nextPage').addEventListener('click', () => {
         updatePaginationControls();
     }
 });
+
 getData();
 
 const searcherInput = document.getElementById('searcher');
@@ -89,9 +98,9 @@ searcherInput.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
         const searchTerm = searcherInput.value.trim().toLowerCase();
         const filteredData = productsData.filter(item => {
-            return item.some(field => {
-                if (field.Key !== undefined && field.Value !== null) {
-                    return field.Value.toString().toLowerCase().includes(searchTerm);
+            return Object.values(item).some(field => {
+                if (field !== null && field !== undefined) {
+                    return field.toString().toLowerCase().includes(searchTerm);
                 }
                 return false;
             });
@@ -123,7 +132,7 @@ function formatISODateToHumanReadable(isoDate) {
 
     let mitutoyoDate = document.querySelector("#dateMitutoyoData");
 
-    mitutoyoDate.innerHTML = dataDate + " datos de Mitutoyo"
+    mitutoyoDate.innerHTML = dataDate + " datos de Mitutoyo";
 }
 
 // Function to export data to CSV
@@ -152,9 +161,9 @@ function exportToExcel(data, filename = 'data.xlsx') {
 function transformProductData(data) {
     return data.map(product => {
         const transformed = {};
-        product.forEach(item => {
-            transformed[item.Key] = Array.isArray(item.Value) ? item.Value.join(', ') : item.Value;
-        });
+        for (const [key, value] of Object.entries(product)) {
+            transformed[key] = Array.isArray(value) ? value.join(', ') : value;
+        }
         return transformed;
     });
 }

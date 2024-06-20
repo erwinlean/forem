@@ -1,8 +1,6 @@
 package mitutoyo
 
 import (
-    "net/http"
-	"time"
 	"encoding/csv"
 	"fmt"
 	"log"
@@ -87,35 +85,6 @@ func WriteCSV(filename string, fileNumber int ,product ProductDetail) {
 	}
 
 	allScrappedProducts[product.URL] = true
-}
-
-func checkURL(url string) bool {
-	client := &http.Client{
-		Timeout: 30 * time.Second,
-	}
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		log.Printf("Error creating request: %s", err)
-		return false
-	}
-
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("Something went wrong: %s", err)
-		return false
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode == http.StatusOK {
-		log.Printf("Successfully fetched %s with status code %d", url, resp.StatusCode)
-		return true
-	}
-
-	log.Printf("Failed to fetch %s with status code %d", url, resp.StatusCode)
-	return false
 }
 
 func printProductDetails(product ProductDetail) {

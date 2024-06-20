@@ -4,3 +4,11 @@ tbody > tr:hover {
 button{
     border-color: black !important;
 }
+.table-cell {
+    max-width: 200px !important;
+    max-height: 200px !important;
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 8px;
+    box-sizing: border-box;
+}

@@ -1,7 +1,7 @@
 package mitutoyo
 
 import (
-	//"log"
+	"log"
 	"strings"
 	"regexp"
 
@@ -21,7 +21,7 @@ func scrapeRecursive(url string) {
 	}
 
 	urlCounts++
-	//log.Printf("Processed URL #%d: %s", urlCounts, url)
+	log.Printf("Processed URL #%d: %s", urlCounts, url)
 
 	subURLs, products := scrapeCategories(url)
 	allScrapedURLs[url] = true
@@ -198,7 +198,7 @@ func extractProductDetails(e *colly.HTMLElement) ProductDetail {
 		}
 	})
 	
-	// Atributos del producto
+	// Atributos del producto > se guardan 3 veces?
 	attributes := make(map[string]string)
 	e.ForEach("#product_parameters table tbody tr", func(_ int, elem *colly.HTMLElement) {
 		param := elem.ChildText("td.parameter span span")

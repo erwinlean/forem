@@ -12,11 +12,11 @@ func MainMitutoyo() []ProductDetail { // Changed the return type to []ProductDet
 	// Test urls 4 missing attr
 	// Table data
 	// table nueva de atributos: 
-	//mainURL := "https://shop.mitutoyo.mx/products/es_MX/KOMEG_Styli_Straight/Stylus%20M2%20ruby%20ball%20%C3%986%2C0mm%0A%2C/$catalogue/mitutoyoData/PR/K651543/index.xhtml"
+	mainURL := "https://shop.mitutoyo.mx/products/es_MX/KOMEG_Styli_Straight/Stylus%20M2%20ruby%20ball%20%C3%986%2C0mm%0A%2C/$catalogue/mitutoyoData/PR/K651543/index.xhtml"
 	// variantes: 
 	//mainURL := "https://shop.mitutoyo.mx/products/es_MX/1292249246959/Surftest%20SJ-210%20%5Bmm%5D/$catalogue/mitutoyoData/PR/178-560-11D/index.xhtml"
 	// accesorios: 
-	 mainURL := "https://shop.mitutoyo.mx/products/es_MX/1292249246959/Surftest%20SJ-210%20%5Bmm%5D/$catalogue/mitutoyoData/PR/178-560-11D/index.xhtml"
+	// mainURL := "https://shop.mitutoyo.mx/products/es_MX/1292249246959/Surftest%20SJ-210%20%5Bmm%5D/$catalogue/mitutoyoData/PR/178-560-11D/index.xhtml"
 	// "Software": 
 	// mainURL := "https://shop.mitutoyo.mx/products/es_MX/1292249246959/Surftest%20SJ-210%20%5Bmm%5D/$catalogue/mitutoyoData/PR/178-560-11D/index.xhtml"
 	// "Folleto, instrucciones, CAD": 
@@ -26,22 +26,12 @@ func MainMitutoyo() []ProductDetail { // Changed the return type to []ProductDet
 	// second test 2x urls
 	//mainURL := "https://shop.mitutoyo.mx/products/es_MX/03/Micr%C3%B3metros%20Laser/index.xhtml;jsessionid=55B66B4B2EDB0B0B0D20C5106D5714CF"
 	// third test, 2 products
-	// mainURL := "https://shop.mitutoyo.mx/products/es_MX/1299074579504/Micr%C3%B3metro%20Laser%20Scan%2C%20unidad%20de%20medici%C3%B3n/index.xhtml"
-
-	ok := checkURL(mainURL)
-	if !ok {
-		log.Println("Skipping scraping as mainURL is not accessible.")
-		return nil // Return nil if the URL is not accessible
-	}
+	//mainURL := "https://shop.mitutoyo.mx/products/es_MX/1299074579504/Micr%C3%B3metro%20Laser%20Scan%2C%20unidad%20de%20medici%C3%B3n/index.xhtml"
 
 	// Init
 	scrapeRecursive(mainURL)
 
-	// Check time of the scraping
-	//duration := time.Since(startTime)
-	//log.Printf("Scraping completed in %v\n", duration)
-//
-	//log.Print("URL scrapped: ", urlCounts)
+	log.Print("URL scrapped: ", urlCounts)
 
 	// Convert map to slice
 	var products []ProductDetail

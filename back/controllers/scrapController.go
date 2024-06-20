@@ -88,10 +88,6 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // comprobar si la data obtenida, ya existe en el JSON data antiguo
-    // enviar solo data nueva via email por un lado, ver de enviar otro csv  con todo completo? dos csv? > modificar utils 
-    // actualizar data nueva al json (agregar), no sobre-escribir
-    // la comprobacion de productos nuevo por sku de producto
     data := mitutoyo.MainMitutoyo()
     if data == nil {
         log.Println("No data obtained from Mitutoyo scraping")
@@ -99,7 +95,6 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Comparar data con la data en la db
     dbData, err := fetchFileData("Mitutoyo")
     if err != nil {
         log.Printf("Error fetching data from database: %v", err)
@@ -107,35 +102,48 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // to test, allData must have everything, old and new, and new only news
+    // getting != betwen new and old (based on the db) then re-writes the db with all of them
+    // sending the email by 2 csv, with newest products and all of them
     var allData, newData []mitutoyo.ProductDetail
+    existingProducts := make(map[string]bool)
     for _, productsDb := range dbData {
-        for _, productDb := range productsDb.Products{
-            for _, product := range data {
-                if productDb.ArticleNumber == product.ArticleNumber{
-                    // product = new product from scrapping &  productDb ...
-                    log.Println(product)
-                    log.Print("....................")
-                    allData = append(allData, product)
-                } else{
-                    // push to newData
-                    allData = append(newData, product)
-                    newData = append(allData, product)
-                }
-            }
+        for _, productDb := range productsDb.Products {
+            existingProducts[productDb.ArticleNumber] = true
+            allData = append(allData, mitutoyo.ProductDetail{
+                URL:                 productDb.URL,
+                ArticleNumber:       productDb.ArticleNumber,
+                Name:                productDb.Name,
+                Description:         productDb.Description,
+                ShortDescription:    productDb.ShortDescription,
+                Image:               productDb.Image,
+                TechnicalImage:      productDb.TechnicalImage,
+                Variants:            productDb.Variants,
+                LeafLetLinks:        productDb.LeafLetLinks,
+                InstructionPDFLinks: productDb.InstructionPDFLinks,
+                Accesories:          productDb.Accesories,
+                ImageLinks:          productDb.ImageLinks,
+                YoutubeLinks:        productDb.YoutubeLinks,
+                SoftwareLinks:       productDb.SoftwareLinks,
+                Attributes:          productDb.Attributes,
+            })
         }
     }
-    log.Println(allData)
-    log.Println(newData)
 
-    // Csv completo y nuevo
+    for _, product := range data {
+        if !existingProducts[product.ArticleNumber] {
+            newData = append(newData, product)
+        }
+        allData = append(allData, product)
+    }
+
     csvFile := "mitutoyo_complete_data.csv"
     newCsvFile := "mitutoyo_new_data.csv"
-    for i := 0; i < len(allData); i++ {
-        mitutoyo.WriteCSV(csvFile, 0, allData[i])
+
+    for _, product := range allData {
+        mitutoyo.WriteCSV(csvFile, 0, product)
     }
-    for i := 0; i < len(newData); i++ {
-        mitutoyo.WriteCSV(newCsvFile, 1, newData[i])
+    for _, product := range newData {
+        mitutoyo.WriteCSV(newCsvFile, 1, product)
     }
 
     // Enviar email
@@ -150,7 +158,7 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
     }
 
     // Guardar en la db
-    err = SaveOrUpdateFileData("Mitutoyo", data)
+    err = SaveOrUpdateFileData("Mitutoyo", allData)
     if err != nil {
         log.Printf("Error saving data to database: %v", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -169,7 +177,7 @@ func Mitutoyo(w http.ResponseWriter, r *http.Request) {
     mitutoyo.ResetScrappedProducts()
 
     w.Header().Set("Content-Type", "application/json")
-    if err := json.NewEncoder(w).Encode(data); err != nil {
+    if err := json.NewEncoder(w).Encode(allData); err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
